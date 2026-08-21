@@ -866,7 +866,9 @@ export class RenderSystem {
   // ==========================================================================
 
   resize(w, h, ctx) {
-    const pr = Math.min(globalThis.devicePixelRatio || 1, 1.5);
+    // A phone can report DPR 3-4, which is wasted work on a fast-moving FPS
+    // and can exceed mobile GPU memory during render-target allocation.
+    const pr = Math.min(globalThis.devicePixelRatio || 1, ctx.config.mobile ? 1 : 1.5);
     this.renderer.setPixelRatio(pr);
     this.renderer.setSize(w, h, false);
 
