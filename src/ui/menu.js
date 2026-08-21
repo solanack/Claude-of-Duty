@@ -85,9 +85,11 @@ export class PauseMenu {
       this.sens.set(1);
       this.fov.set(80);
       this.ctx.config.invertY = false;
-      this.setQuality('ultra');
+      this.setQuality(this.ctx.config.mobile ? 'low' : 'ultra');
     });
-    el('div', 'hint', inner, 'ESC RESUME · WASD MOVE · SHIFT SPRINT · R RELOAD · F USE');
+    el('div', 'hint', inner, this.ctx.config.mobile
+      ? 'LEFT THUMB MOVE · RIGHT SIDE AIM · HOLD FIRE · TAP AIM'
+      : 'ESC RESUME · WASD MOVE · SHIFT SPRINT · R RELOAD · F USE');
 
     this.open = false;
     this.shown = 0;

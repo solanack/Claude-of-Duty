@@ -13,6 +13,7 @@ import { WorldMarkers } from './markers.js';
 import { Prompt, Banner } from './prompts.js';
 import { PauseMenu } from './menu.js';
 import { CombatDemo } from './demo.js';
+import { MobileControls } from './mobile.js';
 
 const MAX_BLIPS = 48;
 
@@ -91,6 +92,7 @@ export class UiSystem {
     this.prompt = new Prompt(this.chromeLayer);
     this.banner = new Banner(this.chromeLayer);
     this.menu = new PauseMenu(this.root, ctx);
+    this.mobile = ctx.config.mobile ? new MobileControls(this.root, ctx, this.menu) : null;
 
     this.health.onBeat = (i) => this.sfx('heartbeat', 0.35 + i * 0.5);
 
@@ -416,6 +418,7 @@ export class UiSystem {
       }
     }
     this.menu.update(rawDt);
+    this.mobile?.update(this.menu.open);
 
     // ---- external state --------------------------------------------------
     // `simulate` means a scripted debug timeline owns the HUD numbers; letting
@@ -607,6 +610,7 @@ export class UiSystem {
     this.prompt.dispose();
     this.banner.dispose();
     this.menu.dispose();
+    this.mobile?.dispose();
     this.root.remove();
     removeStyles();
   }

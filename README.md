@@ -17,6 +17,18 @@ npm run dev          # http://127.0.0.1:5173
 Click the canvas to lock the cursor. WASD move, mouse aim, LMB fire, RMB ADS,
 R reload, Shift sprint, Ctrl crouch, Space jump, Q/E lean, Esc release.
 
+### Mobile controls
+
+Phones and tablets are detected automatically and start on the performance-safe
+`low` preset with a capped device pixel ratio. Tap **Deploy** to enter fullscreen,
+then use the left virtual stick to move and the right side of the screen to aim.
+Dedicated touch controls provide fire, aim-down-sights, jump, reload and pause.
+The interface respects display cutouts and safe areas, supports simultaneous
+multi-touch input, and recommends landscape without blocking portrait play.
+
+Desktop controls and the deterministic capture harness are unchanged. Force a
+different graphics preset on any device with `?q=medium`, `?q=high` or `?q=ultra`.
+
 ## What's in it
 
 | subsystem | what it does |

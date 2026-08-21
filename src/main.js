@@ -23,10 +23,12 @@ const capture = params.get('capture') === '1';
 // because tools that measure real frame pacing (tools/perf.mjs) need the loop to
 // free-run. See the long comment in src/dev/shots.js.
 const lockstep = capture && params.get('lockstep') === '1';
+const mobile = matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
 
 const config = createConfig({
-  quality: params.get('q') ?? 'ultra',
+  quality: params.get('q') ?? (mobile ? 'low' : 'ultra'),
   deterministic: capture,
+  mobile,
 });
 
 const canvas = document.getElementById('game');

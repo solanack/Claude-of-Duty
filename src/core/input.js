@@ -50,6 +50,8 @@ export class Input {
 
     this.gamepadIndex = null;
     this.stick = { moveX: 0, moveY: 0, lookX: 0, lookY: 0 };
+    this.touch = { moveX: 0, moveY: 0 };
+    this._touchLook = { x: 0, y: 0 };
 
     this._bound = {
       keydown: this._onKeyDown.bind(this),
@@ -166,10 +168,12 @@ export class Input {
     this._pendingUp.clear();
 
     const s = this.config.sensitivity;
-    this.look.x = this.frozen ? 0 : this._rawLook.x * s;
-    this.look.y = this.frozen ? 0 : this._rawLook.y * s * (this.config.invertY ? -1 : 1);
+    this.look.x = this.frozen ? 0 : this._rawLook.x * s + this._touchLook.x;
+    this.look.y = this.frozen ? 0 : (this._rawLook.y * s + this._touchLook.y) * (this.config.invertY ? -1 : 1);
     this._rawLook.x = 0;
     this._rawLook.y = 0;
+    this._touchLook.x = 0;
+    this._touchLook.y = 0;
 
     this.wheel = this._pendingWheel;
     this._pendingWheel = 0;
@@ -193,6 +197,22 @@ export class Input {
     const curve = (v) => Math.sign(v) * Math.abs(v) ** 2.4;
     this.stick.lookX = curve(dz(pad.axes[2] ?? 0));
     this.stick.lookY = curve(dz(pad.axes[3] ?? 0));
+  }
+
+  setTouchMove(x, y) {
+    this.touch.moveX = Math.max(-1, Math.min(1, x || 0));
+    this.touch.moveY = Math.max(-1, Math.min(1, y || 0));
+  }
+
+  addTouchLook(dx, dy) {
+    if (this.frozen) return;
+    const scale = this.config.touchSensitivity ?? 0.004;
+    this._touchLook.x += dx * scale;
+    this._touchLook.y += dy * scale;
+  }
+
+  setTouchButton(code, down) {
+    (down ? this._pendingDown : this._pendingUp).add(code);
   }
 
   /** True while any key bound to `action` is held. */
@@ -241,6 +261,8 @@ export class Input {
     let y = (this.action('forward') ? 1 : 0) - (this.action('back') ? 1 : 0);
     x += this.stick.moveX;
     y -= this.stick.moveY;
+    x += this.touch.moveX;
+    y -= this.touch.moveY;
     const len = Math.hypot(x, y);
     if (len > 1) {
       x /= len;
