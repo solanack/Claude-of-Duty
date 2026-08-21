@@ -87,6 +87,7 @@ export const DEFAULTS = {
   adsFovScale: 0.72,
   sensitivity: 0.0022,
   adsSensScale: 0.65,
+  touchSensitivity: 0.004,
   invertY: false,
   exposure: 1.0,
   /** Capture mode disables anything nondeterministic so screenshots are stable. */
